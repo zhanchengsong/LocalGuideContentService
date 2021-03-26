@@ -16,6 +16,13 @@ func homeLink(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Welcome home!")
 }
 
+func commonMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Content-Type", "application/json")
+		next.ServeHTTP(w, r)
+	})
+}
+
 func main() {
 	port := os.Getenv("PORT")
 	// Set up mongoDB connection
@@ -29,6 +36,7 @@ func main() {
 		log.Fatal("Connection to mongodb failed" + err.Error())
 	}
 	router := mux.NewRouter().StrictSlash(true)
+	router.Use(commonMiddleware)
 	router.HandleFunc("/", homeLink)
 	router.HandleFunc("/contents", handlers.HandleGetAllContentRequest).Methods("GET")
 	router.HandleFunc("/contents", handlers.HandleCreateContentRequest).Methods("POST")

@@ -41,6 +41,8 @@ func main() {
 	router.HandleFunc("/contents", handlers.HandleGetAllContentRequest).Methods("GET")
 	router.HandleFunc("/contents", handlers.HandleCreateContentRequest).Methods("POST")
 	router.HandleFunc("/content/{id}", handlers.HandleGetContentByIdRequest).Methods("GET")
+	router.HandleFunc("/content/{id}", handlers.HandleUpdateContentRequest).Methods("PATCH")
+	router.HandleFunc("/content/{id}", handlers.HandleDeleteContentByIdRequest).Methods("DELETE")
 	log.Info(fmt.Sprintf("Service is up and running on port %s", port))
 
 	if err != nil {

@@ -6,21 +6,10 @@ import (
 	"os"
 	"sync"
 
-	"github.com/joho/godotenv"
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
-
-func init() {
-	log.Info("Loading env files")
-	err := godotenv.Load()
-	if err != nil {
-		log.Error(err.Error())
-	}
-	log.Info("Connection string")
-	log.Info(os.Getenv("MONGO_CONNECTION"))
-}
 
 /* Used to create a singleton object of MongoDB client.
 Initialized and exposed through  GetMongoClient().*/
@@ -45,32 +34,11 @@ var credential = options.Credential{
 	AuthSource: os.Getenv("MONGO_DB"),
 }
 
-func init() {
-	log.Info("Loading env files")
-	err := godotenv.Load()
-	if err != nil {
-		log.Error(err.Error())
-	}
-	log.Info("Connection string")
-	log.Info(os.Getenv("MONGO_CONNECTION"))
-
-	CONNECTIONSTRING = os.Getenv("MONGO_CONNECTION")
-	DB = os.Getenv("MONGO_DB")
-	CONTENT = os.Getenv("MONGO_COLLECTION")
-
-	credential = options.Credential{
-		Username:   os.Getenv("MONGO_USERNAME"),
-		Password:   os.Getenv("MONGO_PASSWORD"),
-		AuthSource: os.Getenv("MONGO_DB"),
-	}
-}
-
 //GetMongoClient - Return mongodb connection to work with
 func GetMongoClient() (*mongo.Client, error) {
-	godotenv.Load()
-	//Perform connection creation operation only once.
-	log.Info(fmt.Sprintf("Connection to Mongo at : %s", CONNECTIONSTRING))
 	mongoOnce.Do(func() {
+		//Perform connection creation operation only once.
+		log.Info(fmt.Sprintf("Connection to Mongo at : %s", CONNECTIONSTRING))
 		// Set client options
 		clientOptions := options.Client().ApplyURI(CONNECTIONSTRING).SetAuth(credential)
 		// Connect to MongoDB

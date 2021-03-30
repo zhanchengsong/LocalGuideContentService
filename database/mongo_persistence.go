@@ -14,7 +14,7 @@ type MongoDeleteError struct {
 	Message string
 }
 
-func Error(err MongoDeleteError) string {
+func (err MongoDeleteError) Error() string {
 	return err.Message
 }
 
